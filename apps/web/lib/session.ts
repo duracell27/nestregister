@@ -1,4 +1,4 @@
-'use server'
+"use server";
 import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -8,12 +8,12 @@ export type Session = {
     id: number;
     name: string;
   };
-   accessToken: string;
-   refreshToken: string;
+  accessToken: string;
+  refreshToken: string;
 };
 
 const secretKey = process.env.SESSION_SECRET_KEY!;
-console.log('secretKey', secretKey)
+
 const encodedKey = new TextEncoder().encode(secretKey);
 
 export async function createSession(payload: Session) {
@@ -54,4 +54,32 @@ export async function getSession() {
 
 export async function deleteSession() {
   (await cookies()).delete("session");
+}
+
+export async function updateTokens({
+  accessToken,
+  refreshToken,
+}: {
+  accessToken: string;
+  refreshToken: string;
+}) {
+  const cookie = (await cookies()).get("session")?.value;
+
+  if (!cookie) {
+    return null;
+  }
+
+  const { payload } = await jwtVerify<Session>(cookie, encodedKey);
+
+  if (!payload) {
+    throw new Error("Session not found");
+  }
+
+  const newPayload: Session = {
+    user: { ...payload.user },
+    accessToken,
+    refreshToken,
+  };
+
+  await createSession(newPayload);
 }

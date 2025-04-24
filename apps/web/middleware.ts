@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "./lib/session";
 
-const PUBLIC_PATHS = ["/", "/auth/signin", "/auth/signup"];
+const PUBLIC_PATHS = ["/", "/auth/signin", "/auth/signup", '/api/auth/google/callback'];
 
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

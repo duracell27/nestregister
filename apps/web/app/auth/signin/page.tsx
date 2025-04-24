@@ -1,6 +1,8 @@
 import Link from "next/link";
 import React from "react";
 import { SignUpForm } from "./SignInForm";
+import { BACKEND_URL } from "@/lib/constants";
+import { Button } from "@/components/ui/button";
 
 type Props = {};
 
@@ -16,6 +18,16 @@ const SignUpPage = (props: Props) => {
           {" "}
           Sign Up
         </Link>
+      </div>
+      <hr />
+      <div className="flex flex-col text-sm w-full">
+        <p className="text-center mt-5">Or sign in with: </p>
+        <Button className="w-full">
+          <Link className="font-bold w-full" href={`${BACKEND_URL}/auth/google/login`}>
+            {" "}
+            Google
+          </Link>
+        </Button>
       </div>
     </div>
   );

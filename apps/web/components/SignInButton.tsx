@@ -15,7 +15,7 @@ export const SignInButton = async () => {
       ) : (
         <>
           <p>{session.user.name}</p>
-          {/* <Link href={"/api/auth/signout"}>Sign Out</Link> */}
+    
           <SignOutButton/>
         </>
       )}
