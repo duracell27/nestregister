@@ -67,7 +67,7 @@ export const signIn = async (formData: signInFormData) => {
         user: {
           id: result.id,
           name: result.name,
-          // role: result.role,
+          role: result.role,
         },
         accessToken: result.accessToken,
         refreshToken: result.refreshToken,

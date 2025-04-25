@@ -11,10 +11,10 @@ import { AuthJwtPayload } from './types/auth-jwtPayload';
 import { JwtService } from '@nestjs/jwt';
 import refreshConfig from './config/refresh.config';
 import { ConfigType } from '@nestjs/config';
+import { Role } from 'generated/prisma';
 
 @Injectable()
 export class AuthService {
-  
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
@@ -43,16 +43,17 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return { id: user.id, name: user.name };
+    return { id: user.id, name: user.name, role: user.role };
   }
 
-  async login(userId: number, name?: string) {
+  async login(userId: number, name?: string, role: Role = Role.USER) {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
     const hashedRefreshToken = await hash(refreshToken);
     await this.userService.updateHashedRefreshToken(userId, hashedRefreshToken);
     return {
       id: userId,
       name,
+      role,
       accessToken,
       refreshToken,
     };
@@ -76,7 +77,7 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    const currentUser = { id: user.id };
+    const currentUser = { id: user.id, role: user.role };
 
     return currentUser;
   }
@@ -123,7 +124,6 @@ export class AuthService {
   }
 
   async signOut(userId: number) {
- 
     return await this.userService.updateHashedRefreshToken(userId, null);
   }
 }
